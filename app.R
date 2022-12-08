@@ -5,7 +5,6 @@ library(leaflet)
 library(leaflet.extras)
 library(sf)
 library(shiny)
-library(tidycensus)
 # Load the facd container to build the server
 load("facd.RData")
 tmp <- list()
