@@ -90,7 +90,7 @@ ui <- navbarPage("Census demo by Fabio",
         draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
         width = 360, height = "auto",
         h2("Census demo by Fabio"),
-        p("Last updated: 2022-12-08"),
+        p("Last updated: 2022-12-20"),
         p(a(href = "https://nool.info/2022-12-20-shiny-census/", "Learn more about this app")),
         p("This demo presents data filtered by age from the US Census Bureau's American Community Survey (ACS)",
           a(href = "https://www.census.gov/programs-surveys/acs/microdata.html",
@@ -100,7 +100,7 @@ ui <- navbarPage("Census demo by Fabio",
         # https://towardsdatascience.com/eye-catching-animated-maps-in-r-a-simple-introduction-3559d8c33be1
 
         uiOutput("facdUI"),
-        checkboxInput("show_names", "Show area names"),
+        checkboxInput("show_names", "Show area names in tooltips"),
 
         plotOutput("puma_histogram", height = 200)
       ),
@@ -205,7 +205,7 @@ server <- function(input, output, session) {
     }
     age_sel$breaks <- facd$breaks_function(age_sel$range)
     age_sel$per_year_hist <- tmp$per_year_puma[, .(gplot = list(ggplot(.SD) + geom_histogram(
-      aes(x = stat), breaks = age_sel$breaks, color = "darkgreen", linecolor = "black", linewidth = 1) + scale_x_continuous(name = age_sel$title)
+      aes(x = stat), breaks = age_sel$breaks, fill = "darkgreen", linecolor = "black", linewidth = 1) + scale_x_continuous(name = age_sel$title)
       + scale_y_continuous(name = "Frequency (PUMAs)"))), keyby = Year]
     age_sel$per_year_puma <- facd$year_puma_helper[tmp$per_year_puma, on = .(Year, AreaId)]
     age_sel$color_function <- colorBin(palette = "YlOrBr", domain = age_sel$range,
