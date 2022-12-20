@@ -205,7 +205,7 @@ server <- function(input, output, session) {
     }
     age_sel$breaks <- facd$breaks_function(age_sel$range)
     age_sel$per_year_hist <- tmp$per_year_puma[, .(gplot = list(ggplot(.SD) + geom_histogram(
-      aes(x = stat), breaks = age_sel$breaks, fill = "darkgreen", linecolor = "black", linewidth = 1) + scale_x_continuous(name = age_sel$title)
+      aes(x = stat), breaks = age_sel$breaks, color = "white", fill = "darkgreen", linewidth = 1) + scale_x_continuous(name = age_sel$title)
       + scale_y_continuous(name = "Frequency (PUMAs)"))), keyby = Year]
     age_sel$per_year_puma <- facd$year_puma_helper[tmp$per_year_puma, on = .(Year, AreaId)]
     age_sel$color_function <- colorBin(palette = "YlOrBr", domain = age_sel$range,
