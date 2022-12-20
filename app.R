@@ -91,7 +91,7 @@ ui <- navbarPage("Census demo by Fabio",
         width = 360, height = "auto",
         h2("Census demo by Fabio"),
         p("Last updated: 2022-12-08"),
-        p(a(href = "github.com/facorread/shiny-census", "View source code on GitHub")),
+        p(a(href = "https://nool.info/2022-12-20-shiny-census/", "Learn more about this app")),
         p("This demo presents data filtered by age from the US Census Bureau's American Community Survey (ACS)",
           a(href = "https://www.census.gov/programs-surveys/acs/microdata.html",
           "Public Use Microdata Sample (PUMS).")),
@@ -205,7 +205,7 @@ server <- function(input, output, session) {
     }
     age_sel$breaks <- facd$breaks_function(age_sel$range)
     age_sel$per_year_hist <- tmp$per_year_puma[, .(gplot = list(ggplot(.SD) + geom_histogram(
-      aes(x = stat), breaks = age_sel$breaks) + scale_x_continuous(name = age_sel$title)
+      aes(x = stat), breaks = age_sel$breaks, color = "darkgreen", linecolor = "black", linewidth = 1) + scale_x_continuous(name = age_sel$title)
       + scale_y_continuous(name = "Frequency (PUMAs)"))), keyby = Year]
     age_sel$per_year_puma <- facd$year_puma_helper[tmp$per_year_puma, on = .(Year, AreaId)]
     age_sel$color_function <- colorBin(palette = "YlOrBr", domain = age_sel$range,
@@ -216,7 +216,7 @@ server <- function(input, output, session) {
       "No respondents"), collapse = "<br>")), keyby = AreaId]
     stopifnot(age_sel$per_puma$AreaId == facd$puma_helper$AreaId)
     age_sel$per_puma[, short_label := paste0("<b>", input$statistic, ":</b><br>", common_label)]
-    age_sel$per_puma[, long_label := paste0(facd$puma_helper$Name, "<br>", input$statistic, ":<br>", common_label)]
+    age_sel$per_puma[, long_label := paste0(facd$puma_helper$Name, "<br><b>", input$statistic, ":</b><br>", common_label)]
     age_sel$per_puma_display <- dcast(age_sel$per_year_puma, Area ~ Year, value.var = "stat")
     age_sel$per_puma_display[, Name := facd$puma_helper$Name]
     output$puma_table <- DT::renderDataTable(age_sel$per_puma_display)

@@ -16,6 +16,7 @@ tmp$unused_code <- function() {
 
 # Containers for app variables
 facd <- list()
+facd$cat <- function(...) cat(..., file=stderr(), sep = "")
 facd$stopifna <- function(...) {
     stopifnot(!is.null(...))
     stopifnot(!anyNA(..., recursive = TRUE))

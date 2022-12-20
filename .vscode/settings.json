@@ -4,6 +4,7 @@
         "crosshairs",
         "keyby",
         "pums",
+        "stopifna",
         "stringr",
         "tidycensus"
     ]
