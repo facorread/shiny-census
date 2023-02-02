@@ -1,11 +1,29 @@
 {
     "cSpell.words": [
         "AGEP",
+        "bottomleft",
         "crosshairs",
+        "darkgreen",
+        "dcast",
+        "Fabio",
+        "gdal",
+        "geos",
         "keyby",
+        "lightgray",
+        "linewidth",
+        "Microdata",
+        "MTFC",
+        "NAMELSAD",
+        "PUMACE",
         "pums",
+        "PWGTP",
+        "rbindlist",
+        "SERIALNO",
+        "setkey",
+        "SPORDER",
         "stopifna",
         "stringr",
-        "tidycensus"
+        "tidycensus",
+        "WGTP"
     ]
 }

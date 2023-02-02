@@ -9,7 +9,7 @@ library(shiny)
 load("facd.RData")
 tmp <- list()
 # It looks like Shiny does not load saved functions on load(); we re-declare them here
-facd$cat <- function(...) cat(..., file=stderr(), sep = "")
+facd$cat <- function(...) cat(..., file = stderr(), sep = "")
 facd$breaks_function <- function(data_range) {
     # data_range <- c(100, 225) # For offline testing
     # data_range <- c(3729, 10821) # For offline testing
@@ -66,7 +66,7 @@ setShapeStyle <- function(map, data = getMapData(map), layerId, stroke = NULL, c
     fillOpacity = fillOpacity, dashArray = dashArray, smoothFactor = smoothFactor, noClip = noClip,
     label = label)))
   options <- evalFormula(options, data = data)
-  options <- do.call(data.frame, c(options, list(stringsAsFactors=FALSE)))
+  options <- do.call(data.frame, c(options, list(stringsAsFactors = FALSE)))
   layerId <- options[[1]]
   style <- options[-1]
   if ("label" %in% colnames(style)) {
@@ -90,7 +90,7 @@ ui <- navbarPage("Census demo by Fabio",
         draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
         width = 360, height = "auto",
         h2("Census demo by Fabio"),
-        p("Last updated: 2022-12-20"),
+        p("Last updated: 2023-02-02"),
         p(a(href = "https://nool.info/2022-12-20-shiny-census/", "Learn more about this app")),
         p("This demo presents data filtered by age from the US Census Bureau's American Community Survey (ACS)",
           a(href = "https://www.census.gov/programs-surveys/acs/microdata.html",
@@ -172,15 +172,15 @@ server <- function(input, output, session) {
     }
     if (req(input$statistic) == "Counts") {
       tmp$per_year_puma <- facd$dataset[Age %between% age_sel$age_slider, .(stat = .N), by = .(Year, AreaId)]
-    } else if(input$statistic == "Proportions") {
+    } else if (input$statistic == "Proportions") {
       tmp$per_year_puma <- facd$dataset[, .(stat = mean(Age %between% age_sel$age_slider)), by = .(Year, AreaId)]
       tmp$per_year_puma[!is.finite(stat), stat := NA]
       tmp$per_year_puma <- na.omit(tmp$per_year_puma)
-    } else if(input$statistic == "Averages") {
+    } else if (input$statistic == "Averages") {
       tmp$per_year_puma <- facd$dataset[Age %between% age_sel$age_slider, .(stat = mean(Age)), by = .(Year, AreaId)]
       tmp$per_year_puma[!is.finite(stat), stat := NA]
       tmp$per_year_puma <- na.omit(tmp$per_year_puma)
-    } else if(input$statistic == "Medians") {
+    } else if (input$statistic == "Medians") {
       tmp$per_year_puma <- facd$dataset[Age %between% age_sel$age_slider, .(stat = median(Age)), by = .(Year, AreaId)]
       tmp$per_year_puma[!is.finite(stat), stat := NA]
       tmp$per_year_puma <- na.omit(tmp$per_year_puma)
@@ -204,9 +204,10 @@ server <- function(input, output, session) {
       }
     }
     age_sel$breaks <- facd$breaks_function(age_sel$range)
-    age_sel$per_year_hist <- tmp$per_year_puma[, .(gplot = list(ggplot(.SD) + geom_histogram(
-      aes(x = stat), breaks = age_sel$breaks, color = "white", fill = "darkgreen", linewidth = 1) + scale_x_continuous(name = age_sel$title)
-      + scale_y_continuous(name = "Frequency (PUMAs)"))), keyby = Year]
+    age_sel$per_year_hist <- tmp$per_year_puma[, .(hist_plot = list(ggplot(.SD) + geom_histogram(
+      aes(x = stat), breaks = age_sel$breaks, color = "white", fill = "darkgreen", linewidth = 1) +
+      scale_x_continuous(name = age_sel$title) + scale_y_continuous(
+        name = "Frequency (PUMAs)"))), keyby = Year]
     age_sel$per_year_puma <- facd$year_puma_helper[tmp$per_year_puma, on = .(Year, AreaId)]
     age_sel$color_function <- colorBin(palette = "YlOrBr", domain = age_sel$range,
       na.color = "transparent", bins = age_sel$breaks)
@@ -216,11 +217,13 @@ server <- function(input, output, session) {
       "No respondents"), collapse = "<br>")), keyby = AreaId]
     stopifnot(age_sel$per_puma$AreaId == facd$puma_helper$AreaId)
     age_sel$per_puma[, short_label := paste0("<b>", input$statistic, ":</b><br>", common_label)]
-    age_sel$per_puma[, long_label := paste0(facd$puma_helper$Name, "<br><b>", input$statistic, ":</b><br>", common_label)]
+    age_sel$per_puma[, long_label := paste0(facd$puma_helper$Name, "<br><b>", input$statistic,
+    ":</b><br>", common_label)]
     age_sel$per_puma_display <- dcast(age_sel$per_year_puma, Area ~ Year, value.var = "stat")
     age_sel$per_puma_display[, Name := facd$puma_helper$Name]
     output$puma_table <- DT::renderDataTable(age_sel$per_puma_display)
-    output$general_description <- renderText(paste0("Each PUMA (Public Use Microdata Area) in this map is colored according to the ",
+    output$general_description <- renderText(paste0(
+      "Each PUMA (Public Use Microdata Area) in this map is colored according to the ",
       age_sel$description, " of respondents in the age range ", age_sel$age_slider[1],
       " - ", age_sel$age_slider[2], "."))
     output$puma_table_description <- renderText(paste0("This table shows the ",
@@ -241,7 +244,7 @@ server <- function(input, output, session) {
       setShapeStyle(layerId = puma_stats$Area, fillColor = puma_stats$color, label = if (isTruthy(input$show_names))
       age_sel$per_puma$long_label else age_sel$per_puma$short_label
     )
-    output$puma_histogram <- renderPlot(age_sel$per_year_hist[Year == input$year_slider, gplot[[1]]])
+    output$puma_histogram <- renderPlot(age_sel$per_year_hist[Year == input$year_slider, hist_plot[[1]]])
   })
 
 }

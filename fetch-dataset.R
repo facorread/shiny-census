@@ -16,7 +16,7 @@ tmp$unused_code <- function() {
 
 # Containers for app variables
 facd <- list()
-facd$cat <- function(...) cat(..., file=stderr(), sep = "")
+facd$cat <- function(...) cat(..., file = stderr(), sep = "")
 facd$stopifna <- function(...) {
     stopifnot(!is.null(...))
     stopifnot(!anyNA(..., recursive = TRUE))
@@ -25,9 +25,10 @@ tmp <- list()
 # 2022-11-13 The sf library requires gdal, geos, proj, et al in the server.
 # PUMAs are not available for year %in% 2012:2015 due to inconsistent PUMA boundary definitions
 facd$min_year <- as.integer(2016)
-facd$max_year <- as.integer(2020)
+facd$max_year <- as.integer(2021)
 facd$years <- (facd$min_year):(facd$max_year)
 facd$n_years <- length(facd$years)
+# Shape files were downloaded from https://www2.census.gov/geo/tiger/TIGER2021/PUMA/
 tmp$shape_files <- "tl_2021_39_puma10"
 tmp$sf <- st_read(tmp$shape_files)
 facd$sf <- st_transform(tmp$sf, st_crs("WGS84"))
